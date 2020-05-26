@@ -261,7 +261,7 @@ function display_settings($page)
         <div class="upload-plugin-wrap">
             <div class="upload-plugin">
                 <p class="install-help"><?php _e('TheChecker Email Validation', 'groundhogg-thechecker'); ?></p>
-                <form method="post" class="wp-upload-form">
+                <form method="post" class="gh-tools-box">
                     <?php wp_nonce_field(); ?>
                     <?php echo Plugin::$instance->utils->html->input([
                         'type' => 'hidden',
