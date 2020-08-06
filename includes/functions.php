@@ -307,3 +307,52 @@ function show_low_credits_notice()
 }
 
 add_action( 'groundhogg/notices/before', __NAMESPACE__ . '\show_low_credits_notice' );
+
+
+//Refresh the credits
+
+
+/**
+ * Add send test email UI to the settings area
+ */
+function thechecker_refresh_credit_ui() {
+
+	if ( get_option( 'gh_thechecker_api_key' ) ) {
+		?>
+        <a href="<?php echo wp_nonce_url( $_SERVER[ 'REQUEST_URI' ], 'refresh_credit', 'thechecker_refresh_credit' ); ?>"
+           class="button-secondary"><?php _ex( 'Refresh Credit', 'action', 'groundhogg-thechecker' ) ?></a>
+		<?php
+	}
+}
+
+/**
+ * Verify the send test request
+ *
+ * @return bool
+ */
+function is_refresh_credit() {
+	return wp_verify_nonce( get_request_var( 'thechecker_refresh_credit' ), 'refresh_credit' ) && current_user_can( 'manage_options' );
+}
+
+add_action( 'admin_init', __NAMESPACE__ . '\refresh_credit' );
+
+/**
+ * Send a test email via WP MAIl
+ */
+function refresh_credit() {
+	if ( ! is_refresh_credit() ) {
+		return;
+	}
+	//code to refresh credit
+	$credits = ( \GroundhoggTheChecker\Plugin::$instance->thechecker->get_credits() );
+
+	if ($credits->message) {
+		notices()->add( "thechecker_error", sprintf( __(  "%s", 'groundhogg-thechecker' ), $credits->message ), "error", 'edit_contacts', true );
+		return;
+    }
+
+	notices()->add( "credit_balance", sprintf( __( "you have %d credit left in your TheChecker account. Want more?  <a href='https://groundho.gg/thechecker' target='_blank'>Get credits here!</a>", 'groundhogg-thechecker' ), $credits->credit_balance ), "success", 'edit_contacts', true );
+	delete_transient( 'gh_remaining_thechecker_credits' );
+
+}
+

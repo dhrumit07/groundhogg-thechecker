@@ -8,6 +8,7 @@ use Groundhogg\Extension;
 use GroundhoggTheChecker\Bulk_Jobs\Validate_Emails_Thechecker;
 use GroundhoggTheChecker\Sdk\Thechecker;
 
+
 class Plugin extends Extension{
 
 
@@ -130,6 +131,7 @@ class Plugin extends Extension{
 			'id' => 'thechecker-setting',
 			'title' => _x('TheChecker Settings', 'settings_sections', 'groundhogg-thechecker'),
 			'tab' => 'thechecker',
+			'callback' => __NAMESPACE__ .'\thechecker_refresh_credit_ui'
 		];
 
 		return $sections;
